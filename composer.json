@@ -15,9 +15,10 @@
             "email": "gabrielfs7@gmail.com"
         }
     ],
-    "autolad": {
-        "ps4": {
-            "Bdd\\": "src"
+    "autoload": {
+        "psr-4": {
+            "Bdd\\": "src",
+            "Bdd\\Test\\": "test/bdd"
         }
     },
     "config": {

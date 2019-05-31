@@ -10,6 +10,6 @@ $connection->getPdo()->exec('
     id VARCHAR NOT NULL PRIMARY KEY, 
     sku VARCHAR NOT NULL, 
     price DOUBLE(5, 2),
-    created_at DATE_TIME
+    created_at DATETIME NOT NULL
   );
 ');

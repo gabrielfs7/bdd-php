@@ -3,15 +3,15 @@
 namespace Bdd\Domain\Repository;
 
 use Bdd\Domain\Entity\Product;
-use Bdd\Infrastructure\Database\Connection;
+use Bdd\Infrastructure\Database\ConnectionInterface;
 use PDO;
 
 class ProductRepository implements RepositoryInterface
 {
-    /** @var Connection */
+    /** @var ConnectionInterface */
     private $connection;
 
-    public function __construct(Connection $connection)
+    public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
     }

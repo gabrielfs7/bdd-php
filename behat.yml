@@ -1,0 +1,7 @@
+default:
+  autoload: [ '%paths.base%/test/bdd' ]
+  suites:
+    product_features:
+      paths: [ '%paths.base%/test/bdd' ]
+      contexts:
+        - Bdd\Test\CreateProductFeatureContext
