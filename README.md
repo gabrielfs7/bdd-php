@@ -13,3 +13,9 @@ composer install
 ```
 php -S localhost:8888 -t public public/index.php
 ```
+
+### Run tests
+
+```
+bin/behat
+```
