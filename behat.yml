@@ -1,5 +1,5 @@
 default:
-  autoload: [ '%paths.base%/test/bdd' ]
+  autoload: [ '%paths.base%/test/bootstrap.php' ]
   suites:
     product_features:
       paths: [ '%paths.base%/test/bdd' ]

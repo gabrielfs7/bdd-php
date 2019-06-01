@@ -2,13 +2,32 @@
 
 namespace Bdd\Test;
 
-use Behat\Behat\Tester\Exception\PendingException;
+use Bdd\Domain\Repository\ProductRepository;
 use Behat\Behat\Context\Context;
+use PHPUnit\Framework\Assert;
+use Slim\Http\Response;
 
 class CreateProductFeatureContext implements Context
 {
+    use AppTestTrait;
+
+    /** @var string */
+    private $sku;
+
+    /** @var float */
+    private $price;
+
+    /** @var Response */
+    private $response;
+
+    /** @var ProductRepository */
+    private $productRepository;
+
     public function __construct()
     {
+        $this->initDatabase();
+
+        $this->productRepository = $this->getContainer()->get(ProductRepository::class);
     }
 
     /**
@@ -16,7 +35,8 @@ class CreateProductFeatureContext implements Context
      */
     public function productSkuAbcAndPrice($arg1, $arg2)
     {
-        throw new PendingException();
+        $this->sku = $arg1;
+        $this->price = $arg2;
     }
 
     /**
@@ -24,15 +44,26 @@ class CreateProductFeatureContext implements Context
      */
     public function userSubmitsRequest()
     {
-        throw new PendingException();
+        $this->response = $this->request(
+            'POST',
+            '/products',
+            null,
+            [
+                'sku' => $this->sku,
+                'price' => $this->price,
+            ]
+
+        );
     }
 
     /**
-     * @Then I a new product is created
+     * @Then a new product is created
      */
     public function aNewProductIsCreated()
     {
-        throw new PendingException();
+        $product = $this->productRepository->find($this->getParsedJsonResponse($this->response)['id']);
+
+        Assert::assertNotNull($product);
     }
 
     /**
@@ -40,7 +71,7 @@ class CreateProductFeatureContext implements Context
      */
     public function statusCodeIsReturned($arg1)
     {
-        throw new PendingException();
+        $this->assertResponseStatusCode($this->response, (int)$arg1);
     }
 
     /**
@@ -48,6 +79,12 @@ class CreateProductFeatureContext implements Context
      */
     public function aJsonWithProductSkuAbcAndPriceIsReturned($arg1, $arg2)
     {
-        throw new PendingException();
+        $this->assertJsonResponseContains(
+            $this->response,
+            [
+                'sku' => $arg1,
+                'price' => $arg2,
+            ]
+        );
     }
 }

@@ -21,7 +21,7 @@ class ProductRepository implements RepositoryInterface
         $statement = $this->connection->getPdo()->prepare('SELECT * FROM product WHERE id = ?');
         $statement->execute([$id]);
 
-        return $statement->fetchObject(Product::class);
+        return $this->hydrated((array)$statement->fetchObject());
     }
 
     public function findAll(array $criteria): array
@@ -44,7 +44,13 @@ class ProductRepository implements RepositoryInterface
         $statement = $pdo->prepare('SELECT * FROM product WHERE 1 ' . implode(' AND ', $filters));
         $statement->execute($filterValues);
 
-        return $statement->fetchAll(PDO::FETCH_OBJ, Product::class);
+        $items = [];
+
+        foreach ($statement->fetchAll(PDO::FETCH_OBJ) as $item) {
+            $items[] = $this->hydrated((array)$item);
+        }
+
+        return $items;
     }
 
     public function save(Product $product): void
@@ -67,5 +73,24 @@ class ProductRepository implements RepositoryInterface
     {
         $statement = $this->connection->getPdo()->prepare('DELETE FROM product WHERE id = ?');
         $statement->execute($product->getId());
+    }
+
+    private function hydrated(array $data): Product
+    {
+        $product = new Product($data['sku'], $data['price']);
+
+        $ref = new \ReflectionClass($product);
+
+        $id = $ref->getProperty('id');
+        $id->setAccessible(true);
+        $id->setValue($product, $data['id']);
+        $id->setAccessible(false);
+
+        $createdAt = $ref->getProperty('createdAt');
+        $createdAt->setAccessible(true);
+        $createdAt->setValue($product, new \DateTimeImmutable($data['created_at']));
+        $createdAt->setAccessible(false);
+
+        return $product;
     }
 }

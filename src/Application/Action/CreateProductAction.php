@@ -18,7 +18,7 @@ class CreateProductAction
 
     public function __invoke(Request $request, Response $response): Response
     {
-        $params = $request->getParsedBody();
+        $params = json_decode($request->getBody()->getContents(), true);
 
         $product = $this->createProductService->create($params['sku'], $params['price']);
 
