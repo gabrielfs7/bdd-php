@@ -50,15 +50,7 @@ class ProductRepository implements RepositoryInterface
     public function save(Product $product): void
     {
         $statement = $this->connection->getPdo()->prepare(
-            '
-            INSERT INTO product(id, sku, price, created_at) 
-            VALUES (?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-             id = VALUES(id) + 1,
-             sku = VALUES(sku) + 1,
-             price = VALUES(price) + 1,
-             created_at = VALUES(created_at) + 1;
-            '
+            'INSERT INTO product(id, sku, price, created_at) VALUES (?, ?, ?, ?)'
         );
 
         $statement->execute(

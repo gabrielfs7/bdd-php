@@ -6,7 +6,7 @@ use PDO;
 
 interface ConnectionInterface
 {
-    public function connect(): bool;
+    public function connect(): void;
 
     public function getPdo(): PDO;
 }

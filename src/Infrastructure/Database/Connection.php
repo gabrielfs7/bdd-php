@@ -9,9 +9,16 @@ class Connection implements ConnectionInterface
     /** @var PDO */
     private $pdo;
 
-    public function connect(): bool
+    public function connect(): void
     {
-        $this->pdo = new PDO(sprintf('sqlite:%s', APP_ROOT . '/database/product.db'));
+        $this->pdo = new PDO(
+            sprintf('sqlite:%s', APP_ROOT . '/database/product.db'),
+            null,
+            null,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ]
+        );
     }
 
     public function getPdo(): PDO

@@ -1,10 +1,11 @@
 <?php
 
-use Slim\App;
+use Bdd\Infrastructure\Slim\App;
+
+include __DIR__ . '/../bootstrap.php';
 
 $app = new App();
 
-include '../bootstrap.php';
-include '../config/routes.php';
+include __DIR__ . '/../config/routes.php';
 
 $app->run();
