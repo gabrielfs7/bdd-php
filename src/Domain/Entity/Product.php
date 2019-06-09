@@ -2,7 +2,6 @@
 
 namespace Bdd\Domain\Entity;
 
-use DateTime;
 use DateTimeInterface;
 
 class Product
@@ -24,7 +23,6 @@ class Product
         $this->id = uniqid();
         $this->sku = $sku;
         $this->price = $price;
-        $this->createdAt = new DateTime();
     }
 
     public function getSku(): string
@@ -52,7 +50,7 @@ class Product
         return $this->id;
     }
 
-    public function getCreatedAt(): DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }

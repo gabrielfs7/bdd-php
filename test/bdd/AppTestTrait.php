@@ -64,7 +64,7 @@ trait AppTestTrait
             return $this->app;
         }
 
-        include __DIR__ . '/../bootstrap.php';
+        require_once __DIR__ . '/../bootstrap.php';
 
         $app = new App();
 

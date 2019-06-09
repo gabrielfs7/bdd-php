@@ -4,6 +4,7 @@ namespace Bdd\Domain\Repository;
 
 use Bdd\Domain\Entity\Product;
 use Bdd\Infrastructure\Database\ConnectionInterface;
+use DateTimeImmutable;
 use PDO;
 
 class ProductRepository implements RepositoryInterface
@@ -55,6 +56,23 @@ class ProductRepository implements RepositoryInterface
 
     public function save(Product $product): void
     {
+        if ($product->getCreatedAt()) {
+            $statement = $this->connection->getPdo()->prepare(
+                'UPDATE product SET sku = ?, price = ? WHERE id = ?'
+            );
+
+            $statement->execute(
+                [
+                    $product->getSku(),
+                    $product->getPrice(),
+                    $product->getId(),
+                ]
+            );
+
+            return;
+        }
+
+
         $statement = $this->connection->getPdo()->prepare(
             'INSERT INTO product(id, sku, price, created_at) VALUES (?, ?, ?, ?)'
         );
@@ -64,7 +82,7 @@ class ProductRepository implements RepositoryInterface
                 $product->getId(),
                 $product->getSku(),
                 $product->getPrice(),
-                $product->getCreatedAt()->format(DATE_ATOM),
+                (new DateTimeImmutable())->format(DATE_ATOM)
             ]
         );
     }
@@ -88,7 +106,7 @@ class ProductRepository implements RepositoryInterface
 
         $createdAt = $ref->getProperty('createdAt');
         $createdAt->setAccessible(true);
-        $createdAt->setValue($product, new \DateTimeImmutable($data['created_at']));
+        $createdAt->setValue($product, new DateTimeImmutable($data['created_at']));
         $createdAt->setAccessible(false);
 
         return $product;

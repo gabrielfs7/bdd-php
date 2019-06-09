@@ -4,4 +4,4 @@ default:
     product_features:
       paths: [ '%paths.base%/test/bdd' ]
       contexts:
-        - Bdd\Test\CreateProductFeatureContext
+        - Bdd\Test\ProductFeatureContext

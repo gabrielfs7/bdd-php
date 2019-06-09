@@ -21,6 +21,6 @@ class CreateProductService
 
         $this->productRepository->save($product);
 
-        return $product;
+        return $this->productRepository->find($product->getId());
     }
 }
