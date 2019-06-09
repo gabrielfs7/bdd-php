@@ -8,7 +8,7 @@ interface RepositoryInterface
 {
     public function find(string $id): ?Product;
 
-    public function findAll(array $criteria): array;
+    public function findAll(array $criteria = []): array;
 
     public function save(Product $product): void;
 

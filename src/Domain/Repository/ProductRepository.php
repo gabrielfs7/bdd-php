@@ -24,7 +24,7 @@ class ProductRepository implements RepositoryInterface
         return $this->hydrated((array)$statement->fetchObject());
     }
 
-    public function findAll(array $criteria): array
+    public function findAll(array $criteria = []): array
     {
         $pdo = $this->connection->getPdo();
 

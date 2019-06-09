@@ -8,6 +8,12 @@ Simple use case of BDD using Behat in PHP.
 composer install
 ```
 
+### Create database
+
+```
+php database/init.php
+```
+
 ### Initialize application
 
 ```
