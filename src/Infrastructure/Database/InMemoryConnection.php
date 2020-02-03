@@ -12,7 +12,7 @@ class InMemoryConnection implements ConnectionInterface
     public function connect(): void
     {
         $this->pdo = new PDO(
-            'sqlite::memory',
+            'sqlite::memory:',
             null,
             null,
             [

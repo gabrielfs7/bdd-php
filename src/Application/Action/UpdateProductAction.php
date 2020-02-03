@@ -2,34 +2,37 @@
 
 namespace Bdd\Application\Action;
 
+use Bdd\Application\Middleware\ParseRequestMiddleware;
+use Bdd\Application\Normalizer\ProductNormalizer;
 use Bdd\Domain\Service\UpdateProductService;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Bdd\Infrastructure\Http\JsonResponseAdapter;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class UpdateProductAction
 {
     /** @var UpdateProductService */
     private $updateProductService;
 
-    public function __construct(UpdateProductService $updateProductService)
+    /** @var ProductNormalizer */
+    private $productNormalizer;
+
+    public function __construct(UpdateProductService $updateProductService, ProductNormalizer $productNormalizer)
     {
         $this->updateProductService = $updateProductService;
+        $this->productNormalizer = $productNormalizer;
     }
 
-    public function __invoke(Request $request, Response $response, string $id): Response
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $uriParams): ResponseInterface
     {
-        $params = json_decode($request->getBody()->getContents(), true);
+        $params = $request->getAttribute(ParseRequestMiddleware::JSON_REQUEST_BODY);
 
-        $product = $this->updateProductService->update($id, $params['sku'], $params['price']);
+        $product = $this->updateProductService->update($uriParams['id'], $params['sku'], $params['price']);
 
-        return $response->withJson(
-            [
-                'id' => $product->getId(),
-                'sku' => $product->getSku(),
-                'price' => $product->getPrice(),
-                'createdAt' => $product->getCreatedAt()->format(DATE_ATOM),
-            ],
-            200
-        );
+        return (new JsonResponseAdapter(
+            $response,
+            200,
+            $this->productNormalizer->normalize($product)
+        ))->getResponse();
     }
 }

@@ -2,34 +2,37 @@
 
 namespace Bdd\Application\Action;
 
+use Bdd\Application\Middleware\ParseRequestMiddleware;
+use Bdd\Application\Normalizer\ProductNormalizer;
 use Bdd\Domain\Service\CreateProductService;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Bdd\Infrastructure\Http\JsonResponseAdapter;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class CreateProductAction
 {
     /** @var CreateProductService */
     private $createProductService;
 
-    public function __construct(CreateProductService $createProductService)
+    /** @var ProductNormalizer */
+    private $productNormalizer;
+
+    public function __construct(CreateProductService $createProductService, ProductNormalizer $productNormalizer)
     {
         $this->createProductService = $createProductService;
+        $this->productNormalizer = $productNormalizer;
     }
 
-    public function __invoke(Request $request, Response $response): Response
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $params = json_decode($request->getBody()->getContents(), true);
+        $params = $request->getAttribute(ParseRequestMiddleware::JSON_REQUEST_BODY);
 
         $product = $this->createProductService->create($params['sku'], $params['price']);
 
-        return $response->withJson(
-            [
-                'id' => $product->getId(),
-                'sku' => $product->getSku(),
-                'price' => $product->getPrice(),
-                'createdAt' => $product->getCreatedAt()->format(DATE_ATOM),
-            ],
-            201
-        );
+        return (new JsonResponseAdapter(
+            $response,
+            201,
+            $this->productNormalizer->normalize($product)
+        ))->getResponse();
     }
 }

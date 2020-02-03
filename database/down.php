@@ -1,7 +1,7 @@
 <?php
 
 use Bdd\Infrastructure\Database\ConnectionInterface;
-use Bdd\Infrastructure\Slim\App;
+use Slim\App;
 
 /** @var App $app */
 $connection = $app->getContainer()->get(ConnectionInterface::class);
