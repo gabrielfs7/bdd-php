@@ -4,8 +4,8 @@ Feature: CRUD of product
     Given product sku <sku> and price <price>
     When user submits request
     Then a new product is created
-    And status code <statusCode> is returned
     And a JSON with product sku <sku> and price <price> is returned
+    And status code <statusCode> is returned
 
     Examples:
       | sku    | price | statusCode |
@@ -14,8 +14,8 @@ Feature: CRUD of product
   Scenario Outline: Update a product with sku <sku> and price <price>
     Given there is a product with sku <sku> and price <price>
     When I update product sku <newSku> and price <newPrice>
-    Then status code <statusCode> is returned
-    And a JSON with product sku <newSku> and price <newPrice> is returned
+    Then a JSON with product sku <newSku> and price <newPrice> is returned
+    And status code <statusCode> is returned
 
     Examples:
       | sku    | price | newSku | newPrice | statusCode |

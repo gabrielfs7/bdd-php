@@ -6,7 +6,7 @@ use Bdd\Domain\Entity\Product;
 use Bdd\Domain\Repository\ProductRepository;
 use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
-use Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class ProductFeatureContext implements Context
 {
@@ -21,7 +21,7 @@ class ProductFeatureContext implements Context
     /** @var Product */
     protected $product;
 
-    /** @var Response */
+    /** @var ResponseInterface */
     protected $response;
 
     /** @var ProductRepository */

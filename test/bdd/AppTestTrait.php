@@ -2,11 +2,13 @@
 
 namespace Bdd\Test;
 
-use Bdd\Infrastructure\Slim\App;
+use JsonException;
 use PHPUnit\Framework\Assert;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Slim\Http\Response;
+use Slim\App;
+use Slim\Psr7\Factory\ServerRequestFactory;
+use Slim\Psr7\Factory\UriFactory;
 
 trait AppTestTrait
 {
@@ -19,15 +21,22 @@ trait AppTestTrait
         array $query = null,
         array $body = null,
         array $headers = []
-    ): ResponseInterface {
-        return $this->getApp()->subRequest(
-            $method,
-            $path,
-            $query ? http_build_query($query) : '',
-            $headers,
-            [],
-            $body ? json_encode($body) : ''
-        );
+    ): ResponseInterface
+    {
+        $uri = (new UriFactory())
+            ->createUri($path . '?' . ($query ? http_build_query($query) : null));
+
+        $request = (new ServerRequestFactory())
+            ->createServerRequest($method, $uri, $body);
+
+        $request->getBody()
+            ->write(json_encode($body));
+
+        foreach ($headers as $headerKey => $headerValue) {
+            $request->withAddedHeader($headerKey, $headerValue);
+        }
+
+        return $this->getApp()->handle($request);
     }
 
     protected function getContainer(): ContainerInterface
@@ -43,19 +52,27 @@ trait AppTestTrait
         include __DIR__ . '/../../database/up.php';
     }
 
-    protected function assertJsonResponseContains(Response $response, array $expectedData): void
+    protected function assertJsonResponseContains(ResponseInterface $response, array $expectedData): void
     {
         Assert::assertEmpty(array_diff_assoc($expectedData, $this->getParsedJsonResponse($response)));
     }
 
-    protected function assertResponseStatusCode(Response $response, int $statusCode): void
+    protected function assertResponseStatusCode(ResponseInterface $response, int $statusCode): void
     {
         Assert::assertSame($statusCode, $response->getStatusCode());
     }
 
-    protected function getParsedJsonResponse(Response $response): array
+    protected function getParsedJsonResponse(ResponseInterface $response): array
     {
-        return json_decode((string)$response->getBody(), true);
+        $body = (string)$response->getBody();
+
+        $jsonBody = json_decode($body, true);
+
+        if ($jsonBody === null) {
+            throw new JsonException(sprintf('Could not part Json: %s', $body));
+        }
+
+        return $jsonBody;
     }
 
     private function getApp(): App
@@ -66,7 +83,8 @@ trait AppTestTrait
 
         require_once __DIR__ . '/../bootstrap.php';
 
-        $app = new App();
+        /** @var App $app */
+        $app = include __DIR__ . '/../../app.php';
 
         include APP_ROOT . '/config/routes.php';
 
