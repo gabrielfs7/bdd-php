@@ -9,7 +9,13 @@ class JsonRequestParser
 {
     public function parse(ServerRequestInterface $request): array
     {
-        $params = json_decode((string)$request->getBody(), true);
+        $body = (string)$request->getBody();
+
+        if (empty($body)) {
+            return [];
+        }
+
+        $params = json_decode($body, true);
 
         if (json_last_error()) {
             throw new JsonException(sprintf('Invalid JSON: %s', json_last_error_msg()));

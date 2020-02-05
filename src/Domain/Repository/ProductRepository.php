@@ -95,7 +95,7 @@ class ProductRepository implements RepositoryInterface
         $statement->execute($product->getId());
     }
 
-    private function hydrated(array $data): Product
+    private function hydrated(array $data): EntityInterface
     {
         $product = new Product($data['sku'], $data['price']);
 

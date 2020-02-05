@@ -71,8 +71,8 @@ class ProductFeatureContext implements Context
     public function IUpdateProductSkuAndPrice($arg1, $arg2)
     {
         $this->response = $this->request(
-            'PATCH',
-            '/products/' . $this->product->getId(),
+            'PUT',
+            '/v1/products/' . $this->product->getId(),
             null,
             [
                 'sku' => $arg1,
@@ -98,7 +98,7 @@ class ProductFeatureContext implements Context
     {
         $this->response = $this->request(
             'POST',
-            '/products',
+            '/v1/products',
             null,
             [
                 'sku' => $this->sku,

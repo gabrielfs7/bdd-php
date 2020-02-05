@@ -17,8 +17,10 @@ php database/init.php
 ### Initialize application
 
 ```
-php -S localhost:8888 -t public public/index.php
+php -S localhost:8888 -t public
 ```
+
+Access the application [here](http://localhost:8888).
 
 ### OpenApi documentation
 
