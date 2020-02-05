@@ -20,6 +20,10 @@ php database/init.php
 php -S localhost:8888 -t public public/index.php
 ```
 
+### OpenApi documentation
+
+View it using [Swagger Editor](https://editor.swagger.io/?raw=https://raw.githubusercontent.com/gabrielfs7/bdd-php/master/doc/openapi.yaml).
+
 ### Run tests
 
 ```
