@@ -2,10 +2,13 @@
 
 namespace Bdd\Domain\Repository;
 
+use Bdd\Domain\Entity\EntityCollection;
+use Bdd\Domain\Entity\EntityInterface;
 use Bdd\Domain\Entity\Product;
 use Bdd\Infrastructure\Database\ConnectionInterface;
 use DateTimeImmutable;
 use PDO;
+use ReflectionClass;
 
 class ProductRepository implements RepositoryInterface
 {
@@ -17,7 +20,7 @@ class ProductRepository implements RepositoryInterface
         $this->connection = $connection;
     }
 
-    public function find(string $id): ?Product
+    public function find(string $id): ?EntityInterface
     {
         $statement = $this->connection->getPdo()->prepare('SELECT * FROM product WHERE id = ?');
         $statement->execute([$id]);
@@ -25,7 +28,7 @@ class ProductRepository implements RepositoryInterface
         return $this->hydrated((array)$statement->fetchObject());
     }
 
-    public function findAll(array $criteria = []): array
+    public function findAll(array $criteria = []): EntityCollection
     {
         $pdo = $this->connection->getPdo();
 
@@ -45,16 +48,16 @@ class ProductRepository implements RepositoryInterface
         $statement = $pdo->prepare('SELECT * FROM product WHERE 1 ' . implode(' AND ', $filters));
         $statement->execute($filterValues);
 
-        $items = [];
+        $collection = new EntityCollection();
 
         foreach ($statement->fetchAll(PDO::FETCH_OBJ) as $item) {
-            $items[] = $this->hydrated((array)$item);
+            $collection->append($this->hydrated((array)$item));
         }
 
-        return $items;
+        return $collection;
     }
 
-    public function save(Product $product): void
+    public function save(EntityInterface $product): void
     {
         if ($product->getCreatedAt()) {
             $statement = $this->connection->getPdo()->prepare(
@@ -72,7 +75,6 @@ class ProductRepository implements RepositoryInterface
             return;
         }
 
-
         $statement = $this->connection->getPdo()->prepare(
             'INSERT INTO product(id, sku, price, created_at) VALUES (?, ?, ?, ?)'
         );
@@ -87,7 +89,7 @@ class ProductRepository implements RepositoryInterface
         );
     }
 
-    public function remove(Product $product): void
+    public function remove(EntityInterface $product): void
     {
         $statement = $this->connection->getPdo()->prepare('DELETE FROM product WHERE id = ?');
         $statement->execute($product->getId());
@@ -97,7 +99,7 @@ class ProductRepository implements RepositoryInterface
     {
         $product = new Product($data['sku'], $data['price']);
 
-        $ref = new \ReflectionClass($product);
+        $ref = new ReflectionClass($product);
 
         $id = $ref->getProperty('id');
         $id->setAccessible(true);

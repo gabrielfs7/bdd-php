@@ -4,7 +4,7 @@ namespace Bdd\Domain\Entity;
 
 use DateTimeInterface;
 
-class Product
+class Product implements EntityInterface
 {
     /** @var string */
     private $id;
