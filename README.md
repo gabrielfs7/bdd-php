@@ -25,3 +25,11 @@ php -S localhost:8888 -t public public/index.php
 ```
 bin/behat
 ```
+
+### Code Standards
+
+Run code fixer:
+
+```
+bin/php-cs-fixer fix --verbose src/
+```
