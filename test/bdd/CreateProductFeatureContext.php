@@ -3,15 +3,10 @@
 namespace Bdd\Test;
 
 use Bdd\Domain\Entity\Product;
-use Bdd\Domain\Repository\ProductRepository;
-use Behat\Behat\Context\Context;
 use PHPUnit\Framework\Assert;
-use Psr\Http\Message\ResponseInterface;
 
-class ProductFeatureContext implements Context
+class CreateProductFeatureContext extends AbstractFeatureContext
 {
-    use AppTestTrait;
-
     /** @var string */
     protected $sku;
 
@@ -20,19 +15,6 @@ class ProductFeatureContext implements Context
 
     /** @var Product */
     protected $product;
-
-    /** @var ResponseInterface */
-    protected $response;
-
-    /** @var ProductRepository */
-    protected $productRepository;
-
-    public function __construct()
-    {
-        $this->initDatabase();
-
-        $this->productRepository = $this->getContainer()->get(ProductRepository::class);
-    }
 
     /**
      * @Then status code :arg1 is returned
@@ -53,32 +35,6 @@ class ProductFeatureContext implements Context
                 'sku' => $arg1,
                 'price' => $arg2,
             ]
-        );
-    }
-
-    /**
-     * @Given there is a product with sku :arg1 and price :arg2
-     */
-    public function thereIsAProductWithSkuAndPrice($arg1, $arg2)
-    {
-        $this->productRepository->save(new Product($arg1, $arg2));
-        $this->product = current($this->productRepository->findAll([]));
-    }
-
-    /**
-     * @When I update product sku :arg1 and price :arg2
-     */
-    public function IUpdateProductSkuAndPrice($arg1, $arg2)
-    {
-        $this->response = $this->request(
-            'PUT',
-            '/v1/products/' . $this->product->getId(),
-            null,
-            [
-                'sku' => $arg1,
-                'price' => $arg2,
-            ]
-
         );
     }
 
