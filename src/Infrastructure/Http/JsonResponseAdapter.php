@@ -17,7 +17,7 @@ class JsonResponseAdapter
 
         $this->response
             ->getBody()
-            ->write(json_encode($body));
+            ->write(json_encode($body, JSON_UNESCAPED_UNICODE));
     }
 
     public function getResponse(): ResponseInterface

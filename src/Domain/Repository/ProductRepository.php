@@ -25,7 +25,9 @@ class ProductRepository implements RepositoryInterface
         $statement = $this->connection->getPdo()->prepare('SELECT * FROM product WHERE id = ?');
         $statement->execute([$id]);
 
-        return $this->hydrated((array)$statement->fetchObject());
+        $object = $statement->fetchObject();
+
+        return $object ? $this->hydrated((array)$object) : null;
     }
 
     public function findAll(array $criteria = []): EntityCollection
@@ -92,7 +94,7 @@ class ProductRepository implements RepositoryInterface
     public function remove(EntityInterface $product): void
     {
         $statement = $this->connection->getPdo()->prepare('DELETE FROM product WHERE id = ?');
-        $statement->execute($product->getId());
+        $statement->execute([$product->getId()]);
     }
 
     private function hydrated(array $data): EntityInterface
