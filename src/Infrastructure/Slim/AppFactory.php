@@ -2,6 +2,7 @@
 
 namespace Bdd\Infrastructure\Slim;
 
+use Bdd\Application\Handler\ErrorHandler;
 use Bdd\Infrastructure\DI\ContainerProviderInterface;
 use DI\ContainerBuilder;
 use Slim\App;
@@ -31,7 +32,10 @@ class AppFactory
         SlimAppFactory::setContainer($container);
 
         $app = SlimAppFactory::create();
-        $app->addErrorMiddleware($container->get('settings.displayErrorDetails'), false, false);
+        $app->addRoutingMiddleware();
+
+        $errorHandler = $app->addErrorMiddleware($container->get('settings.displayErrorDetails'), false, false);
+        $errorHandler->setDefaultErrorHandler(new ErrorHandler($app->getResponseFactory()));
 
         return $app;
     }
@@ -43,7 +47,7 @@ class AppFactory
         $finalConfigs = [];
 
         foreach ($defaultConfigs as $defaultConfig) {
-            $finalConfigs += include $defaultConfig;
+            $finalConfigs = array_merge_recursive($finalConfigs, include $defaultConfig);
         }
 
         foreach (glob(APP_ROOT . '/config/' . APP_ENV . '/*.php') as $envConfig) {
