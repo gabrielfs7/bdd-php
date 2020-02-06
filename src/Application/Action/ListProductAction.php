@@ -3,7 +3,7 @@
 namespace Bdd\Application\Action;
 
 use Bdd\Application\Normalizer\ProductListNormalizer;
-use Bdd\Domain\Service\ListProductService;
+use Bdd\Application\Service\ListProductService;
 use Bdd\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

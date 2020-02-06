@@ -4,7 +4,7 @@ namespace Bdd\Application\Action;
 
 use Bdd\Application\Middleware\ParseRequestMiddleware;
 use Bdd\Application\Normalizer\ProductNormalizer;
-use Bdd\Domain\Service\CreateProductService;
+use Bdd\Application\Service\CreateProductService;
 use Bdd\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

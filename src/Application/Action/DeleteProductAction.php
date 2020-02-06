@@ -2,7 +2,7 @@
 
 namespace Bdd\Application\Action;
 
-use Bdd\Domain\Service\DeleteProductService;
+use Bdd\Application\Service\DeleteProductService;
 use Bdd\Infrastructure\Http\JsonResponseAdapter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

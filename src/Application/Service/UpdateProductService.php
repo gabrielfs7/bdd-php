@@ -1,7 +1,8 @@
 <?php
 
-namespace Bdd\Domain\Service;
+namespace Bdd\Application\Service;
 
+use Bdd\Application\Request\Error\ResourceNotFoundException;
 use Bdd\Domain\Entity\Product;
 use Bdd\Domain\Repository\ProductRepository;
 
@@ -18,6 +19,11 @@ class UpdateProductService
     public function update(string $id, string $sku, float $price): Product
     {
         $product = $this->productRepository->find($id);
+
+        if (!$product) {
+            throw new ResourceNotFoundException('Product not found');
+        }
+
         $product->setSku($sku);
         $product->setPrice($price);
 

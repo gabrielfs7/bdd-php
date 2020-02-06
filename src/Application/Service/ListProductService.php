@@ -1,6 +1,6 @@
 <?php
 
-namespace Bdd\Domain\Service;
+namespace Bdd\Application\Service;
 
 use Bdd\Domain\Entity\EntityCollection;
 use Bdd\Domain\Repository\ProductRepository;

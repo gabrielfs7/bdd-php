@@ -1,7 +1,8 @@
 <?php
 
-namespace Bdd\Domain\Service;
+namespace Bdd\Application\Service;
 
+use Bdd\Application\Request\Error\ResourceNotFoundException;
 use Bdd\Domain\Entity\Product;
 use Bdd\Domain\Repository\ProductRepository;
 
@@ -17,6 +18,12 @@ class GetProductService
 
     public function get(string $id): Product
     {
-        return $this->productRepository->find($id);
+        $product = $this->productRepository->find($id);
+
+        if (!$product) {
+            throw new ResourceNotFoundException('Product not found');
+        }
+
+        return $product;
     }
 }
