@@ -12,10 +12,11 @@ Feature: Update a product
 
   Scenario Outline: Update a product with invalid sku
     Given there is an existent product
-    When I update the product with invalid sku <invalidSku>
+    When I update the product with invalid sku <sku> or price <price>
     Then a JSON with product the error <errorMessage> is returned
     And status code <statusCode> for update is returned
 
     Examples:
-      | errorMessage                             | invalidSku | statusCode |
-      | 'Product sku must be a string. "" given' | ""         | 400        |
+      | errorMessage                                   | sku  | price | statusCode |
+      | 'Product sku must be a string. "" given'       | ""   | 55.5  | 400        |
+      | 'Product price must be a number. string given' | test | ""    | 400        |

@@ -25,9 +25,9 @@ class UpdateProductFeatureContext extends AbstractFeatureContext
     }
 
     /**
-     * @When I update the product with invalid sku :arg1
+     * @When I update the product with invalid sku :arg1 or price :arg2
      */
-    public function iUpdateTheProductWithInvalidSku($arg1)
+    public function iUpdateTheProductWithInvalidSku($arg1, $arg2)
     {
         $this->response = $this->request(
             'PUT',
@@ -35,7 +35,7 @@ class UpdateProductFeatureContext extends AbstractFeatureContext
             null,
             [
                 'sku' => $arg1,
-                'price' => 15.7,
+                'price' => $arg2,
             ]
         );
     }

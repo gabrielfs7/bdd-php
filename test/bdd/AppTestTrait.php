@@ -54,7 +54,10 @@ trait AppTestTrait
 
     protected function assertJsonResponseContains(ResponseInterface $response, array $expectedData): void
     {
-        Assert::assertEmpty(array_diff_assoc($expectedData, $this->getParsedJsonResponse($response)));
+        Assert::assertEmpty(
+            array_diff_assoc($expectedData, $this->getParsedJsonResponse($response)),
+            var_export($this->getParsedJsonResponse($response), true)
+        );
     }
 
     protected function assertResponseStatusCode(ResponseInterface $response, int $statusCode): void
